@@ -6,18 +6,19 @@ const AniCard = ({
     url,
     title,
     image_url,
+    day,
     synopsis,
     type,
     airing_start,
     episodes,
-    updateSubs
+    click
 }) => {
     const history = useHistory();
 
     return (
         // <Card onClick={() => history.push(`/${id}`)}>
         <Card >
-            <CardMedia image={image_url} style={{ height: 200, width: 200 }} onClick={() => { updateSubs(mal_id) }}></CardMedia>
+            <CardMedia image={image_url} style={{ height: 200, width: 200 }} onClick={() => { click(day, mal_id, title) }}></CardMedia>
             <CardContent>
                 <Tooltip title={title}>
                     <Typography noWrap variant="h6">

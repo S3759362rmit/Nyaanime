@@ -12,7 +12,8 @@ app.use(cors());
 
 app.use('', createProxyMiddleware({
     // target: 'https://nyaasi-api.herokuapp.com/'
-    target: 'https://nyaasi-api.herokuapp.com/', //original url
+    // target: 'https://nyaa.si/'
+    target: 'https://nyaa.si/', //target url
     changeOrigin: true,
     //secure: false,
     onProxyRes: function (proxyRes, req, res) {
