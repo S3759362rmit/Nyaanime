@@ -12,7 +12,7 @@ const SubsPage = () => {
   useEffect(() => {
     // console.log(subs);
     localStorage.setItem("subscription", JSON.stringify(subs))
-  });
+  }, [subs]);
 
   const { data, status } = useFetch(
     "https://api.jikan.moe/v3/schedule"
@@ -22,11 +22,6 @@ const SubsPage = () => {
   );
 
   const { request_hash, request_cached, request_cache_expiry, ...days } = data || {};
-
-
-
-
-
 
   if (status === "fetching") {
     return <Typography>Loading...</Typography>;
@@ -69,9 +64,9 @@ const SubsPage = () => {
       {days && Object.entries(days).map((day) => (
         <>< Typography variant="h6" > {day[0]} </Typography>
           {/* {JSON.stringify(day[1], undefined, 2)} */}
-          <Grid container spacing={2}>
+          <Grid container spacing={1} rowSpacing={1} columnSpacing={{ xs: 0, sm: 1 }} >
             {day[1].map((anime) => (
-              <Grid item key={anime.mal_id} xs={2}>
+              <Grid item key={anime.mal_id} xs={2}  >
                 <AniCard {...anime} day={day[0]} click={updateSubs} />
               </Grid>
               // {/* {JSON.stringify(anime, undefined, 2)} */}
