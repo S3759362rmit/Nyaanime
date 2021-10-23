@@ -13,15 +13,7 @@ const App = () => {
     const localSubs = JSON.parse(localStorage.getItem("subscription"))
     const [filter, setFilter] = useState("0")
     const [category, setCategory] = useState("1_0")
-    const [torrents, setTorrents] = useState({})
-
-    useEffect(() => {
-        console.log(localSubs);
-        Object.values(localSubs).flat().map((anime) => {
-            search(anime.title).then((data) => { setTorrents({ ...torrents, anime: data }) });
-            console.log("serching ", anime.title)
-        });
-    }, []);
+    const [torrents, setTorrents] = useState([])
     // const [subs, setSubs] = useState([])
     // const [subs, setSubs] = useState(localSubs ? JSON.parse(localSubs) : [])
 
@@ -36,7 +28,7 @@ const App = () => {
     si.cli.defaults.baseURL = 'http://localhost:3001'
     const search = (title) => {
         // return si.search(title, 20, { filter: filter, category: category }).then((data) => { return data }).catch((err) => console.log(err));
-        return si.search(title, 20, { filter: filter, category: category }).catch((err) => console.log(err));
+        return si.search(title, 20, { filter: filter, category: category }).then((data) => { setTorrents(data) }).catch((err) => console.log(err));
     }
 
     return (
@@ -75,42 +67,45 @@ const App = () => {
             {localSubs && Object.entries(localSubs).map((day) => (
                 <>< Typography variant="h6" > {day[0]} </Typography>
                     <Grid container spacing={1}>
-                        {day[1].map((anime) => (
-                            <Grid container spacing={0}>
-                                <Grid item key={anime.mal_id} xs={2}>
-                                    <AniCard {...anime} day={day[0]} click={search} />
-                                </Grid>
+                        {day[1].map((anime) => {
+                            search(anime.title);
+                            return (
+                                <Grid container spacing={0}>
+                                    <Grid item key={anime.mal_id} xs={2}>
+                                        <AniCard {...anime} day={day[0]} click={search} />
+                                    </Grid>
 
-                                <Grid item key={anime.mal_id} xs={10}>
-                                    <TableContainer component={Paper}>
-                                        <Table size="small" aria-label="torrent-table">
-                                            <TableHead>
-                                                <TableRow>
-                                                    <TableCell>Name</TableCell>
-                                                    <TableCell align="right">Size</TableCell>
-                                                    <TableCell align="right">Date</TableCell>
-                                                </TableRow>
-                                            </TableHead>
-                                            <TableBody>
-                                                {torrents[anime]?.map((torrent) => (
-                                                    <TableRow
-                                                        key={torrent.name}
-                                                        sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                                                    >
-                                                        <TableCell component="th" scope="row">
-                                                            {torrent.name}
-                                                        </TableCell>
-                                                        <TableCell align="right">{torrent.filesize}</TableCell>
-                                                        <TableCell align="right">{torrent.date}</TableCell>
+                                    <Grid item key={anime.mal_id} xs={10}>
+                                        <TableContainer component={Paper}>
+                                            <Table size="small" aria-label="torrent-table">
+                                                <TableHead>
+                                                    <TableRow>
+                                                        <TableCell>Name</TableCell>
+                                                        <TableCell align="right">Size</TableCell>
+                                                        <TableCell align="right">Date</TableCell>
                                                     </TableRow>
-                                                ))}
+                                                </TableHead>
+                                                <TableBody>
+                                                    {/* {search(anime.title)} */}
+                                                    {torrents?.map((torrent) => (
+                                                        <TableRow
+                                                            key={torrent.name}
+                                                            sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                                                        >
+                                                            <TableCell component="th" scope="row">
+                                                                {torrent.name}
+                                                            </TableCell>
+                                                            <TableCell align="right">{torrent.filesize}</TableCell>
+                                                            <TableCell align="right">{torrent.date}</TableCell>
+                                                        </TableRow>
+                                                    ))}
 
-                                            </TableBody>
-                                        </Table>
-                                    </TableContainer>
-                                </Grid>
+                                                </TableBody>
+                                            </Table>
+                                        </TableContainer>
+                                    </Grid>
 
-                                {/* <Grid item key={anime.mal_id} xs={10}>
+                                    {/* <Grid item key={anime.mal_id} xs={10}>
                                     <TableContainer component={Paper}>
                                         <Table size="small" aria-label="torrent-table">
                                             <TableHead>
@@ -139,9 +134,10 @@ const App = () => {
                                         </Table>
                                     </TableContainer>
                                 </Grid> */}
-                            </Grid>
-                            // {/* {JSON.stringify(anime, undefined, 2)} */}
-                        ))}
+                                </Grid>
+                                // {/* {JSON.stringify(anime, undefined, 2)} */}
+                            )
+                        })}
                     </Grid>
                 </>
             ))}
