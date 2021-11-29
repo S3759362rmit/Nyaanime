@@ -1,4 +1,4 @@
-import { Typography, Grid } from "@material-ui/core";
+import { Typography, Grid, Button } from "@material-ui/core";
 import { useEffect, useState } from "react";
 import { useFetch } from "../hook";
 import AniCard from "./AniCard"
@@ -49,6 +49,7 @@ const SubsPage = () => {
   return (
     <>
       <Typography variant="h3"> Welcome to subsciption! </Typography>
+      <Button variant="contained" disableElevation href="/tracking">Go to tracker</Button>
       {/* < pre > {JSON.stringify(subs, undefined, 2)} </pre> */}
       {/* {
         data &&

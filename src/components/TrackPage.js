@@ -1,29 +1,31 @@
-import { Typography, Grid } from "@material-ui/core";
+import { Typography, Grid, Button } from "@material-ui/core";
 import { InputLabel, MenuItem, FormControl, Select } from "@material-ui/core";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@material-ui/core";
 import { useEffect, useState } from "react";
 import { useFetch } from "../hook";
 import AniCard from "./AniCard"
 // import { si } from "../Nyaapi/src/index.js";
-import { si } from "nyaapi";
+import { pantsu } from "nyaapi";
 
 const App = () => {
 
 
-    const localSubs = JSON.parse(localStorage.getItem("subscription"))
+    const localSubs = localStorage.getItem("subscription");
+    const subs = localSubs ? JSON.parse(localSubs) : { "monday": [], "tuesday": [], "wednesday": [], "thursday": [], "friday": [], "saturday": [], "sunday": [], "other": [], "unknown": [] };
+
     const [filter, setFilter] = useState("0")
     const [category, setCategory] = useState("1_0")
     const [torrents, setTorrents] = useState({})
 
     useEffect(() => {
-        console.log(localSubs);
-        Object.values(localSubs).flat().map((anime) => {
+        console.log(subs);
+        Object.values(subs)?.flat().map((anime) => {
             search(anime.title).then((data) => { setTorrents({ ...torrents, anime: data }) });
             console.log("serching ", anime.title)
         });
     }, []);
     // const [subs, setSubs] = useState([])
-    // const [subs, setSubs] = useState(localSubs ? JSON.parse(localSubs) : [])
+    // const [subs, setSubs] = useState(subs ? JSON.parse(subs) : [])
 
     // if (status === "fetching") {
     //     return <Typography>Loading...</Typography>;
@@ -33,15 +35,19 @@ const App = () => {
     // si.config.updateBaseUrl('https://nyaa.kr')
 
     // change baseURL to proxy server
-    si.cli.defaults.baseURL = 'http://localhost:3001'
+    pantsu.cli.defaults.baseURL = 'http://localhost:3001'
     const search = (title) => {
         // return si.search(title, 20, { filter: filter, category: category }).then((data) => { return data }).catch((err) => console.log(err));
-        return si.search(title, 20, { filter: filter, category: category }).catch((err) => console.log(err));
+        // si version
+        // return si.search(title, 20, { filter: filter, category: category }).catch((err) => console.log(err));
+        return pantsu.search(title, 20, { order: true, sort: '4' }).catch((err) => console.log(err));
     }
 
     return (
         <>
+            {/* {JSON.stringify(anime, undefined, 2)} */}
             <Typography variant="h3">Welcome to tracker!</Typography>
+            <Button variant="contained" disableElevation href="subsciption">Go to subscription</Button>
             <FormControl >
                 <InputLabel id="filter-select-label">Filter</InputLabel>
                 <Select
@@ -72,7 +78,7 @@ const App = () => {
                 </Select>
             </FormControl>
 
-            {localSubs && Object.entries(localSubs).map((day) => (
+            {subs && Object.entries(subs).map((day) => (
                 <>< Typography variant="h6" > {day[0]} </Typography>
                     <Grid container spacing={1}>
                         {day[1].map((anime) => (
