@@ -1,7 +1,13 @@
-import { Typography, Grid, Button } from "@material-ui/core";
+import { Typography, Grid, Button, Badge, Checkbox } from "@material-ui/core";
+import { compose, spacing, palette } from "@material-ui/system";
+// import CheckIcon from '@material-ui/icons/Check';
+// import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
+// import Favorite from '@mui/icons-material/Favorite';
 import { useEffect, useState } from "react";
 import { useFetch } from "../hook";
 import AniCard from "./AniCard"
+import styleFunctionSx from "@mui/system/styleFunctionSx";
+import { styled } from "@mui/system"
 
 const SubsPage = () => {
   const localSubs = localStorage.getItem("subscription")
@@ -46,9 +52,18 @@ const SubsPage = () => {
   //   return { ...rest };
   // }
 
+  const styleFunction = styleFunctionSx(compose(spacing, palette));
+  const sxBadge = styled(Badge)(styleFunction);
+
   return (
     <>
-      <Typography variant="h3"> Welcome to subsciption! </Typography>
+      <Typography variant="h3" sx={{
+        bgcolor: 'background.paper',
+        boxShadow: 1,
+        borderRadius: 1,
+        p: 2,
+        minWidth: 300,
+      }}> Welcome to subsciption! </Typography>
       <Button variant="contained" disableElevation href="/tracking">Go to tracker</Button>
       {/* < pre > {JSON.stringify(subs, undefined, 2)} </pre> */}
       {/* {
@@ -68,7 +83,12 @@ const SubsPage = () => {
           <Grid container spacing={1} rowSpacing={1} columnSpacing={{ xs: 0, sm: 1 }} >
             {day[1].map((anime) => (
               <Grid item key={anime.mal_id} xs={2}  >
-                <AniCard {...anime} day={day[0]} click={updateSubs} />
+                <sxBadge sx={{
+                  // '& .MuiBadge-root': { display: 'block', },
+                  width: 1,
+                }} badgeContent={<Checkbox onChange={updateSubs} />} >
+                  <AniCard {...anime} day={day[0]} click={updateSubs} />
+                </sxBadge>
               </Grid>
               // {/* {JSON.stringify(anime, undefined, 2)} */}
             ))}
